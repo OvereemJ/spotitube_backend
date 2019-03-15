@@ -1,5 +1,7 @@
 #Directorys
+/.idea
+/target
 
 
 #Iml maven project file
-
+spotitubebackend.iml
