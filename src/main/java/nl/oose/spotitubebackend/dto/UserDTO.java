@@ -4,22 +4,22 @@ public class UserDTO {
 
     private String user;
     private String password;
+    private String name;
 
-    public UserDTO(){
-
+    public UserDTO() {
     }
 
-    public UserDTO(String username, String password){
-        this.user = username;
+    public UserDTO(String user, String password) {
+        this.user = user;
         this.password = password;
     }
 
-    public String getUsername() {
+    public String getUser() {
         return user;
     }
 
-    public void setUsername(String username) {
-        this.user = username;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getPassword() {
@@ -30,4 +30,37 @@ public class UserDTO {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNewUserToken(int token_length)
+    {
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(token_length);
+
+        for (int i = 0; i < token_length; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
+    }
 }
