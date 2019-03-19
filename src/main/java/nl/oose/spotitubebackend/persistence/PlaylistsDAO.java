@@ -17,12 +17,13 @@ public class PlaylistsDAO {
         try
                 (
                         Connection connection = new ConnectionFactory().getConnection();
-                        PreparedStatement preparedStatement = connection.prepareStatement("SELECT PL.playlist_id, PL.user, PL.name FROM playlist PL where PL.user = ?")
+                        PreparedStatement preparedStatement = connection.prepareStatement("SELECT PL.playlist_id, PL.user, PL.name FROM playlist PL " +
+                                "INNER JOIN account a on PL.user = a.user where a.user = ?")
                 ){
             preparedStatement.setString(1, user);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                playlist.add(new PlaylistDTO(resultSet.getInt("playlist_id"), resultSet.getString("name"), resultSet.getBoolean("owner")));
+                playlist.add(new PlaylistDTO(resultSet.getInt("playlist_id"), resultSet.getString("name"),  resultSet.getString("user")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -32,7 +32,7 @@ public class LoginResourceTest {
 
     @Test
     void loginSuccess() {
-        when(authenticationService.login("uwe", "uwepass"))
+        when(authenticationService.login("Jorrit", "uwepass"))
                 .thenReturn(new TokenDTO("1234", "Testuser"));
 
         UserDTO userDTO = new UserDTO("uwe", "uwepass");

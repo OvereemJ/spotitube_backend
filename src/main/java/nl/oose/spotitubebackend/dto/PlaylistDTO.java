@@ -6,16 +6,16 @@ import java.util.List;
 public class PlaylistDTO {
     private int id;
     private String name;
-    private Boolean owner;
+    private String user;
 
 
     public PlaylistDTO() {
     }
 
-    public PlaylistDTO(int id, String name, Boolean owner) {
+    public PlaylistDTO(int id, String name, String user) {
         this.id = id;
         this.name = name;
-        this.owner = owner;
+        this.user = user;
     }
 
     public int getId() {
@@ -34,13 +34,12 @@ public class PlaylistDTO {
         this.name = name;
     }
 
-    public Boolean getOwner() {
-        return owner;
+    public String getUser() {
+        return user;
     }
 
-    public void setOwner(Boolean owner) {
-        this.owner = owner;
+    public void setUser(String user) {
+        this.user = user;
     }
-
 }
 

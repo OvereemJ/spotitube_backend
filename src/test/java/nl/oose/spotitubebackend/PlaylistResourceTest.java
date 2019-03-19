@@ -28,8 +28,8 @@ public class PlaylistResourceTest {
         List<PlaylistDTO> playlist = new ArrayList<>();
         List<TrackDTO> tracklist = new ArrayList<>();
         Map<String, PlaylistsDTO> playlistsMap = new HashMap<>();
-        playlist.add(new PlaylistDTO(1, "Death Metal", true));
-        playlist.add(new PlaylistDTO(2, "Pop", true));
+        playlist.add(new PlaylistDTO(1, "Death Metal", "Jorrit"));
+        playlist.add(new PlaylistDTO(2, "Pop", "Jorrit"));
         playlistsMap.put("1", new PlaylistsDTO(playlist.subList(0,playlist.size()), 123445));
     }
 
