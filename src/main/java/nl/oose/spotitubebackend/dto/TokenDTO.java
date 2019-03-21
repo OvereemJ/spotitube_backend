@@ -29,5 +29,11 @@ public class TokenDTO {
         this.user = user;
     }
 
-
+    @Override
+    public String toString() {
+        return "TokenDTO{" +
+                "token='" + token + '\'' +
+                ", user='" + user + '\'' +
+                '}';
+    }
 }

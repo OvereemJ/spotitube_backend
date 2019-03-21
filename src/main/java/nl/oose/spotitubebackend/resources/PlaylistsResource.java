@@ -4,24 +4,26 @@ package nl.oose.spotitubebackend.resources;
 
 
 import nl.oose.spotitubebackend.dto.*;
-import nl.oose.spotitubebackend.persistence.PlaylistsDAO;
-import nl.oose.spotitubebackend.persistence.TokenDAO;
 import nl.oose.spotitubebackend.persistence.UserDAO;
+import nl.oose.spotitubebackend.persistence.UserDAOImpl;
+import nl.oose.spotitubebackend.service.PlaylistService;
 import nl.oose.spotitubebackend.service.PlaylistServiceImpl;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
-@Path("playlists")
+@Path("/playlists")
 public class PlaylistsResource {
 
-    PlaylistServiceImpl playlistService = new PlaylistServiceImpl();
+    private PlaylistService playlistService;
+    private UserDAO userDAO = new UserDAOImpl();
+    @Inject
+    public PlaylistsResource(PlaylistService playlistService){
+        this.playlistService = playlistService;
+    }
 
 
     public PlaylistsResource() {
@@ -34,7 +36,9 @@ public class PlaylistsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPlaylists(@QueryParam("token") String token){
-        PlaylistsDTO playlist = playlistService.getPlaylistByToken(token);
+        System.out.println(token);
+        UserDTO user = userDAO.getUserByToken(token);
+        PlaylistsDTO playlist = playlistService.getPlaylistByUser(token, user.getUser());
         return Response.ok(playlist).build();
     }
 
@@ -52,7 +56,8 @@ public class PlaylistsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePlaylistName(@QueryParam("token") String token, @PathParam("id") int playlist_id, PlaylistDTO playlist) {
         playlistService.updatePlaylistName(token, playlist_id, playlist.getName());
-        PlaylistsDTO playlists = playlistService.getPlaylistByToken(token);
+        UserDTO user = userDAO.getUserByToken(token);
+        PlaylistsDTO playlists = playlistService.getPlaylistByUser(token, user.getUser());
         return Response.ok(playlists).build();
     }
 
@@ -60,7 +65,7 @@ public class PlaylistsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlist){
-        playlistService.addPlaylist(token, playlist.getId(), playlist.getName(),playlist.getUser());
+        playlistService.addPlaylist(token, playlist.getName());
         return Response.ok("New playlist added").build();
     }
 

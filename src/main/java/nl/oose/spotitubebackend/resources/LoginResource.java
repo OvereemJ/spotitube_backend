@@ -1,10 +1,9 @@
 package nl.oose.spotitubebackend.resources;
 
-import nl.oose.spotitubebackend.dto.ErrorDTO;
 import nl.oose.spotitubebackend.dto.TokenDTO;
 import nl.oose.spotitubebackend.dto.UserDTO;
 import nl.oose.spotitubebackend.persistence.TokenDAO;
-import nl.oose.spotitubebackend.persistence.UserDAO;
+import nl.oose.spotitubebackend.persistence.UserDAOImpl;
 import nl.oose.spotitubebackend.service.AuthenticationService;
 
 import javax.inject.Inject;
@@ -16,13 +15,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 
-@Path("login")
+@Path("/login")
 public class LoginResource {
 
     private AuthenticationService authenticationService;
 
-    UserDAO userDAO = new UserDAO();
-    TokenDAO tokenDAO = new TokenDAO();
 
     public LoginResource() {
 
@@ -38,6 +35,7 @@ public class LoginResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginUser(UserDTO user){
         TokenDTO token = authenticationService.login(user.getUser(), user.getPassword());
+        System.out.println(token);
         return Response.ok(token).build();
 
     }
