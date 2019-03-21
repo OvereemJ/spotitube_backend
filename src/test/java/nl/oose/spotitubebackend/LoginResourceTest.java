@@ -35,7 +35,7 @@ public class LoginResourceTest {
         when(authenticationService.login("Jorrit", "uwepass"))
                 .thenReturn(new TokenDTO("1234", "Testuser"));
 
-        UserDTO userDTO = new UserDTO("uwe", "uwepass");
+        UserDTO userDTO = new UserDTO("Jorrit", "uwepass");
         Response actualResult = sut.loginUser(userDTO);
 
         assertEquals(Response.Status.OK.getStatusCode(), actualResult.getStatus());

@@ -7,6 +7,7 @@ import nl.oose.spotitubebackend.dto.*;
 import nl.oose.spotitubebackend.persistence.PlaylistsDAO;
 import nl.oose.spotitubebackend.persistence.TokenDAO;
 import nl.oose.spotitubebackend.persistence.UserDAO;
+import nl.oose.spotitubebackend.service.PlaylistServiceImpl;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -19,8 +20,8 @@ import java.util.Map;
 
 @Path("playlists")
 public class PlaylistsResource {
-    UserDAO userDAO = new UserDAO();
-    PlaylistsDAO playlistsDAO = new PlaylistsDAO();
+
+    PlaylistServiceImpl playlistService = new PlaylistServiceImpl();
 
 
     public PlaylistsResource() {
@@ -33,13 +34,34 @@ public class PlaylistsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPlaylists(@QueryParam("token") String token){
-        System.out.println(token);
-        UserDTO validToken = userDAO.getUserByToken(token);
-        if(validToken != null){
-            return Response.ok(playlistsDAO.getUserPlaylists(validToken.getUser())).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("User token "+ token + " is invalid").build();
-        }
+        PlaylistsDTO playlist = playlistService.getPlaylistByToken(token);
+        return Response.ok(playlist).build();
+    }
+
+    @POST
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removePlaylist(@QueryParam("token") String token, @PathParam("id") int playlist_id){
+        playlistService.removePlaylist(token, playlist_id);
+        return Response.ok("Playlist removed").build();
+    }
+
+    @PUT
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePlaylistName(@QueryParam("token") String token, @PathParam("id") int playlist_id, PlaylistDTO playlist) {
+        playlistService.updatePlaylistName(token, playlist_id, playlist.getName());
+        PlaylistsDTO playlists = playlistService.getPlaylistByToken(token);
+        return Response.ok(playlists).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlist){
+        playlistService.addPlaylist(token, playlist.getId(), playlist.getName(),playlist.getUser());
+        return Response.ok("New playlist added").build();
     }
 
 }

@@ -2,10 +2,11 @@ package nl.oose.spotitubebackend.dto;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistsDTO {
-    private List<PlaylistDTO> playlists;
+    private List<PlaylistDTO> playlists = new ArrayList<>();
     private long length;
 
     public PlaylistsDTO() {
@@ -31,5 +32,9 @@ public class PlaylistsDTO {
 
     public void setLengthInSeconds(int lengthInSeconds) {
         this.length = lengthInSeconds;
+    }
+
+    public void addPlaylist(PlaylistDTO playlist){
+        playlists.add(playlist);
     }
 }
