@@ -44,7 +44,7 @@ public class PlaylistResourceTest {
 
     @BeforeEach
     void setUp(){
-        playlist = new PlaylistDTO(2, "Pop", "Jorrit");
+        playlist = new PlaylistDTO(2, "Pop", true);
         playlists = new PlaylistsDTO();
         playlists.setLengthInSeconds(12334);
         playlists.addPlaylist(playlist);
@@ -64,7 +64,8 @@ public class PlaylistResourceTest {
     @Test
     void showPlayListWithIncorrectToken(){
         String token = "1234-12398-1234";
-        when(playlistService.getPlaylistByToken(anyString())).thenThrow(
+        String user = "jorrit";
+        when(playlistService.getPlaylistByUser(anyString(), anyString())).thenThrow(
                 new SpotitubePlaylistException("Can't create playlist, "+token+" is invalid"));
         SpotitubePlaylistException spotitubePlaylistException = assertThrows(SpotitubePlaylistException.class, () -> {
             Response actualResult = sut.getAllPlaylists(token);
