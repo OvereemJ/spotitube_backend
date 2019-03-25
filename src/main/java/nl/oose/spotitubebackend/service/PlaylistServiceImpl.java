@@ -10,6 +10,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     UserDAOImpl userDAOImpl = new UserDAOImpl();
     PlaylistsDAO playlistsDAO = new PlaylistsDAO();
 
+    //TODO : Exexptions aanpassen
     @Override
     public PlaylistsDTO getPlaylistByUser(String token, String username) {
         //TODO Get playlist via token
@@ -23,8 +24,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public void removePlaylist(String token, int playlistid) {
-        UserDTO validToken = userDAOImpl.getUserByToken(token);
-        if(validToken != null){
+        UserDTO user  = userDAOImpl.getUserByToken(token);
+        if(user != null){
             playlistsDAO.removePlaylistFromDatabase(playlistid);
         } else {
             throw new SpotitubePlaylistException("Can't create playlist, "+token+" is invalid");
@@ -33,9 +34,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public void addPlaylist(String token, String name) {
-        UserDTO validToken = userDAOImpl.getUserByToken(token);
-        if(validToken != null){
-            playlistsDAO.addPlaylistToDatabase(name);
+        UserDTO user = userDAOImpl.getUserByToken(token);
+        if(user != null){
+            playlistsDAO.addPlaylistToDatabase(name, user.getUser());
         } else {
             throw new SpotitubePlaylistException("Can't create playlist, "+token+" is invalid");
         }
@@ -44,8 +45,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public void updatePlaylistName(String token, int playlist_id, String name) {
-        UserDTO validToken = userDAOImpl.getUserByToken(token);
-        if(validToken != null){
+        UserDTO user = userDAOImpl.getUserByToken(token);
+        if(user != null){
             playlistsDAO.updatePlaylist(playlist_id, name);
         } else {
             throw new SpotitubePlaylistException("Can't create playlist, "+token+" is invalid");

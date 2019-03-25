@@ -1,7 +1,7 @@
 #Directorys
 /.idea
 /target
-
+/_deprecated
 
 #Iml maven project file
 spotitubebackend.iml

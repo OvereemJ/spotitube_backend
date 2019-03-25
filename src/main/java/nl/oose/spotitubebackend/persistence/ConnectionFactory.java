@@ -34,7 +34,7 @@ public class ConnectionFactory {
             properties.setProperty("db.url", CONNECTION_URL);
             properties.setProperty("db.driver", DRIVER);
 
-            e.printStackTrace();
+            e.getMessage();
         }
         return properties;
     }

@@ -7,9 +7,17 @@ public class PlaylistDTO {
     private int id;
     private String name;
     private boolean owner;
+    private TracksDTO tracks;
 
 
     public PlaylistDTO() {
+    }
+
+    public PlaylistDTO(int id, String name, boolean owner, TracksDTO tracks) {
+        this.id = id;
+        this.name = name;
+        this.owner = owner;
+        this.tracks = tracks;
     }
 
     public PlaylistDTO(int id, String name, boolean owner) {
@@ -40,6 +48,14 @@ public class PlaylistDTO {
 
     public void setOwner(boolean owner) {
         this.owner = owner;
+    }
+
+    public TracksDTO getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(TracksDTO tracks) {
+        this.tracks = tracks;
     }
 }
 

@@ -26,7 +26,7 @@ public class PlaylistsDAO {
             while(resultSet.next()) {
                 playlistArray.add(new PlaylistDTO(resultSet.getInt("playlist_id"), resultSet.getString("name"),  resultSet.getBoolean("owner")));
             }
-            playlistsDTO = new PlaylistsDTO(playlistArray, 12334);
+            playlistsDTO = new PlaylistsDTO(playlistArray, getPlaylistsLength(username));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -49,17 +49,18 @@ public class PlaylistsDAO {
         }
     }
 
-    public void addPlaylistToDatabase(String name) {
+    public void addPlaylistToDatabase(String name, String user) {
+        int last_id = getLastInsertedId();
         try
                 (
-                        Connection connection = new ConnectionFactory().getConnection();
-                        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playlist (playlist_id, name, owner) VALUES (?,?,?)")
-
+                        PreparedStatement preparedStatement = getConnection().prepareStatement("INSERT INTO playlist (playlist_id, name, owner) VALUES (?,?,?)");
                 ){
-            preparedStatement.setInt(1, -1);
+            preparedStatement.setInt(1, last_id);
             preparedStatement.setString(2, name);
-            preparedStatement.setBoolean(3, false);
+            preparedStatement.setBoolean(3, true);
             preparedStatement.execute();
+
+            insertUser(user, last_id);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,8 +71,7 @@ public class PlaylistsDAO {
 
         try
                 (
-                        Connection connection = new ConnectionFactory().getConnection();
-                        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playlist SET name = ? WHERE playlist_id = ?")
+                        PreparedStatement preparedStatement = getConnection().prepareStatement("UPDATE playlist SET name = ? WHERE playlist_id = ?")
                 ){
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, id);
@@ -80,5 +80,57 @@ public class PlaylistsDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getLastInsertedId() {
+        int last_inserted = 1;
+        try{
+
+            PreparedStatement lasinsertedId = getConnection().prepareStatement("SELECT MAX(playlist_id) as playlist_id FROM playlist ");
+            ResultSet result = lasinsertedId.executeQuery();
+            while(result.next()){
+                last_inserted += result.getInt("playlist_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return  last_inserted;
+    }
+
+
+
+    public void insertUser(String name, int id){
+        try {
+            PreparedStatement insertUser = getConnection().prepareStatement("INSERT INTO playlist_user (user, playlist_id) VALUES (?,?)");
+            insertUser.setString(1, name);
+            insertUser.setInt(2, id);
+            insertUser.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Connection getConnection(){
+        Connection connection = new ConnectionFactory().getConnection();
+        return connection;
+    }
+
+    public int getPlaylistsLength(String user){
+        int totalDuration = 0;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT SUM(T.duration) AS duration FROM playlist_user PU INNER JOIN playlist_track PT ON \n" +
+                    "PT.playlist_id = PU.playlist_id INNER JOIN tracks T \n" +
+                    "ON T.id = PT.track_id WHERE PU.user = ?");
+            preparedStatement.setString(1, user);
+            ResultSet result = preparedStatement.executeQuery();
+            while(result.next()){
+                totalDuration += result.getInt("duration");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return totalDuration;
     }
 }

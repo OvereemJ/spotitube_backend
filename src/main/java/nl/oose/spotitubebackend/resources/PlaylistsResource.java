@@ -8,6 +8,7 @@ import nl.oose.spotitubebackend.persistence.UserDAO;
 import nl.oose.spotitubebackend.persistence.UserDAOImpl;
 import nl.oose.spotitubebackend.service.PlaylistService;
 import nl.oose.spotitubebackend.service.PlaylistServiceImpl;
+import nl.oose.spotitubebackend.service.TrackService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -20,8 +21,11 @@ public class PlaylistsResource {
 
     private PlaylistService playlistService;
     private UserDAO userDAO = new UserDAOImpl();
+    private TrackService trackService;
+
     @Inject
-    public PlaylistsResource(PlaylistService playlistService){
+    public PlaylistsResource(PlaylistService playlistService, TrackService trackService){
+        this.trackService = trackService;
         this.playlistService = playlistService;
     }
 
@@ -42,12 +46,15 @@ public class PlaylistsResource {
         return Response.ok(playlist).build();
     }
 
-    @POST
+    @DELETE
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response removePlaylist(@QueryParam("token") String token, @PathParam("id") int playlist_id){
         playlistService.removePlaylist(token, playlist_id);
-        return Response.ok("Playlist removed").build();
+        UserDTO user = userDAO.getUserByToken(token);
+        PlaylistsDTO playlist = playlistService.getPlaylistByUser(token, user.getUser());
+        return Response.ok(playlist).build();
     }
 
     @PUT
@@ -66,7 +73,39 @@ public class PlaylistsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlist){
         playlistService.addPlaylist(token, playlist.getName());
-        return Response.ok("New playlist added").build();
+        UserDTO user = userDAO.getUserByToken(token);
+        PlaylistsDTO playlists = playlistService.getPlaylistByUser(token, user.getUser());
+        return Response.ok(playlists).build();
+    }
+
+
+    @GET
+    @Path("{id}/tracks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllTracksForPlaylist(@QueryParam("token") String token, @PathParam("id") String playlist_id){
+        TracksDTO tracksDTO = trackService.getAllTracksFromPlaylist(token, playlist_id);
+        return Response.ok(tracksDTO).build();
+    }
+
+    @DELETE
+    @Path("{playlist_id}/tracks/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeTrack(@QueryParam("token") String token, @PathParam("playlist_id") String playlist_id, @PathParam("id") String track_id){
+        System.out.println("playlistid = " + playlist_id + " trackid = " + track_id);
+        trackService.removeTrack(token, playlist_id, track_id);
+        TracksDTO tracksDTO = trackService.getAllTracksFromPlaylist(token, playlist_id);
+        return Response.ok(tracksDTO).build();
+    }
+
+    @POST
+    @Path("{id}/tracks")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTrack(@QueryParam("token") String token, @PathParam("id") String playlist_id ,TrackDTO track){
+        trackService.addTrack(token, playlist_id, track.getId());
+        TracksDTO tracksDTO = trackService.getAllTracksFromPlaylist(token, playlist_id);
+        return Response.ok(tracksDTO).build();
     }
 
 }
