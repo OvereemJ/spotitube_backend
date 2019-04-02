@@ -89,7 +89,7 @@ public class TrackDTO {
         this.desscription = desscription;
     }
 
-    public boolean isOfflineAvailable() {
+    public boolean getOfflineAvailable() {
         return offlineAvailable;
     }
 

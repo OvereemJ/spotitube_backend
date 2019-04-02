@@ -1,9 +1,8 @@
 package nl.oose.spotitubebackend.service;
 
-import nl.oose.spotitubebackend.dto.PlaylistDTO;
+
 import nl.oose.spotitubebackend.dto.TracksDTO;
 
-import java.util.List;
 
 
 public interface TrackService {
@@ -11,7 +10,7 @@ public interface TrackService {
 
      TracksDTO getAllTracksFromPlaylist(String token, String playlist_id);
 
-     void addTrack(String token, String playlist_id, int track_id);
+     void addTrack(String token, String playlist_id, int track_id, boolean offlineAvailable);
 
      void removeTrack(String token, String playlist_id, String trackid);
 }

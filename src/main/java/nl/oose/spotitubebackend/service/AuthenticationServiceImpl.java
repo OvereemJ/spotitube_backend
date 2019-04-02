@@ -3,8 +3,7 @@ package nl.oose.spotitubebackend.service;
 
 import nl.oose.spotitubebackend.dto.TokenDTO;
 import nl.oose.spotitubebackend.dto.UserDTO;
-import nl.oose.spotitubebackend.persistence.TokenDAO;
-import nl.oose.spotitubebackend.persistence.UserDAO;
+import nl.oose.spotitubebackend.persistence.TokenDAOImpl;
 import nl.oose.spotitubebackend.persistence.UserDAOImpl;
 import nl.oose.spotitubebackend.util.TokenGenerator;
 
@@ -15,7 +14,7 @@ import javax.inject.Inject;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private UserDAOImpl userDAO;
-    private TokenDAO tokenDAO = new TokenDAO();
+    private TokenDAOImpl tokenDAOImpl = new TokenDAOImpl();
     private TokenGenerator tokenGenerator = new TokenGenerator();
 
     public AuthenticationServiceImpl(){
@@ -31,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDTO user = userDAO.getUser(username, password);
         String generatedToken = tokenGenerator.generateToken();
         if (user != null) {
-            tokenDAO.saveToken(username, generatedToken);
+            tokenDAOImpl.saveToken(username, generatedToken);
             return new TokenDTO(generatedToken, user.getName());
         } else {
             throw new SpotitubeLoginException("Login failed for user " + username);

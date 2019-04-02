@@ -1,4 +1,4 @@
-package nl.oose.spotitubebackend;
+package nl.oose.spotitubebackend.resources;
 
 
 import nl.oose.spotitubebackend.dto.TokenDTO;
@@ -30,6 +30,10 @@ public class LoginResourceTest {
     @InjectMocks
     private LoginResource sut;
 
+    @Test
+    void testDefaultLoginResourceConstructor(){
+        LoginResource loginResource = new LoginResource();
+    }
     @Test
     void loginSuccess() {
         when(authenticationService.login("Jorrit", "uwepass"))

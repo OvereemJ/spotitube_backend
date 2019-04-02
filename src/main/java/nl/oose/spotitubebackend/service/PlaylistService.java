@@ -3,7 +3,7 @@ package nl.oose.spotitubebackend.service;
 import nl.oose.spotitubebackend.dto.PlaylistsDTO;
 
 public interface PlaylistService {
-     PlaylistsDTO getPlaylistByUser(String token, String user);
+     PlaylistsDTO getPlaylistByUser(String token);
 
      void removePlaylist(String token, int playlistid);
 

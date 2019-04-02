@@ -26,7 +26,6 @@ public class TrackResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllTracks(@QueryParam("token") String token, @QueryParam("forPlaylist") String playlist_id){
-        System.out.println(playlist_id);
         TracksDTO tracksDTO = trackService.getAllAvailableTracks(token, playlist_id);
         return Response.ok(tracksDTO).build();
     }

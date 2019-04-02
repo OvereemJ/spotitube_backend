@@ -10,23 +10,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistsDAO {
+public class PlaylistsDAOImpl implements PlaylistsDAOInterface {
     private List<PlaylistDTO> playlistArray = new ArrayList<>();
-    public PlaylistsDTO getUserPlaylists(String username){
+    @Override
+    public PlaylistsDTO getUserPlaylists(String token){
         PlaylistsDTO playlistsDTO = null;
         try
                 (
                         Connection connection = new ConnectionFactory().getConnection();
                         PreparedStatement preparedStatement = connection.prepareStatement("select playlist.playlist_id, playlist.name, playlist.owner from playlist " +
                                 "INNER JOIN playlist_user pu on playlist.playlist_id = pu.playlist_id " +
-                                "WHERE pu.user =  ?")
+                                "INNER JOIN token T ON pu.user = T.user " +
+                                "WHERE T.auth_token =  ?")
                 ){
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, token);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 playlistArray.add(new PlaylistDTO(resultSet.getInt("playlist_id"), resultSet.getString("name"),  resultSet.getBoolean("owner")));
             }
-            playlistsDTO = new PlaylistsDTO(playlistArray, getPlaylistsLength(username));
+            playlistsDTO = new PlaylistsDTO(playlistArray, getPlaylistsLength(token));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,6 +36,7 @@ public class PlaylistsDAO {
         return playlistsDTO;
     }
 
+    @Override
     public void removePlaylistFromDatabase(int playlistid) {
         try
                 (
@@ -49,6 +52,7 @@ public class PlaylistsDAO {
         }
     }
 
+    @Override
     public void addPlaylistToDatabase(String name, String user) {
         int last_id = getLastInsertedId();
         try
@@ -67,6 +71,7 @@ public class PlaylistsDAO {
         }
     }
 
+    @Override
     public void updatePlaylist(int id, String name) {
 
         try
@@ -82,6 +87,7 @@ public class PlaylistsDAO {
         }
     }
 
+    @Override
     public int getLastInsertedId() {
         int last_inserted = 1;
         try{
@@ -100,6 +106,7 @@ public class PlaylistsDAO {
 
 
 
+    @Override
     public void insertUser(String name, int id){
         try {
             PreparedStatement insertUser = getConnection().prepareStatement("INSERT INTO playlist_user (user, playlist_id) VALUES (?,?)");
@@ -111,18 +118,21 @@ public class PlaylistsDAO {
         }
     }
 
+    @Override
     public Connection getConnection(){
         Connection connection = new ConnectionFactory().getConnection();
         return connection;
     }
 
-    public int getPlaylistsLength(String user){
+    @Override
+    public int getPlaylistsLength(String token){
         int totalDuration = 0;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT SUM(T.duration) AS duration FROM playlist_user PU INNER JOIN playlist_track PT ON \n" +
                     "PT.playlist_id = PU.playlist_id INNER JOIN tracks T \n" +
-                    "ON T.id = PT.track_id WHERE PU.user = ?");
-            preparedStatement.setString(1, user);
+                    "ON T.id = PT.track_id " +
+                    "INNER JOIN Token Tkn on Pu.user = Tkn.user WHERE Tkn.auth_token = ?");
+            preparedStatement.setString(1, token);
             ResultSet result = preparedStatement.executeQuery();
             while(result.next()){
                 totalDuration += result.getInt("duration");

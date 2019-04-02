@@ -26,12 +26,12 @@ public class PlaylistsDTO {
         this.playlists = playlists;
     }
 
-    public long getLengthInSeconds() {
+    public long getLength() {
         return length;
     }
 
-    public void setLengthInSeconds(int lengthInSeconds) {
-        this.length = lengthInSeconds;
+    public void setLength(long length) {
+        this.length = length;
     }
 
     public void addPlaylist(PlaylistDTO playlist){
