@@ -71,7 +71,7 @@ public class PlaylistResourceTest {
     void throwExceptionWithIncorrectToken(){
 
         String token ="1234-1234-231";
-        when(playlistService.getPlaylistByUser(anyString())).thenThrow(
+        when(playlistService.getPlaylistByToken(anyString())).thenThrow(
                 new SpotitubeTokenException("Can't create playlist, "+token+" is invalid"));
         SpotitubeTokenException spotitubePlaylistException = assertThrows(SpotitubeTokenException.class, () -> {
             Response actualResult = sut.getAllPlaylists(token);
@@ -141,7 +141,7 @@ public class PlaylistResourceTest {
     }
 
     void createPlaylistDAOMock(String token){
-        Mockito.when(playlistService.getPlaylistByUser(token)).thenReturn(playlists);
+        Mockito.when(playlistService.getPlaylistByToken(token)).thenReturn(playlists);
     }
 
     void createTracklistDAOMock(){

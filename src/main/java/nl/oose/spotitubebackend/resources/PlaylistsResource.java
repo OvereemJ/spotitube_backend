@@ -37,7 +37,7 @@ public class PlaylistsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPlaylists(@QueryParam("token") String token){
-        PlaylistsDTO playlist = playlistService.getPlaylistByUser(token);
+        PlaylistsDTO playlist = playlistService.getPlaylistByToken(token);
         return Response.ok(playlist).build();
     }
 
@@ -47,7 +47,7 @@ public class PlaylistsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removePlaylist(@QueryParam("token") String token, @PathParam("id") int playlist_id){
         playlistService.removePlaylist(token, playlist_id);
-        PlaylistsDTO playlist = playlistService.getPlaylistByUser(token);
+        PlaylistsDTO playlist = playlistService.getPlaylistByToken(token);
         return Response.ok(playlist).build();
     }
 
@@ -57,7 +57,7 @@ public class PlaylistsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePlaylistName(@QueryParam("token") String token, @PathParam("id") int playlist_id, PlaylistDTO playlist) {
         playlistService.updatePlaylistName(token, playlist_id, playlist.getName());
-        PlaylistsDTO playlists = playlistService.getPlaylistByUser(token);
+        PlaylistsDTO playlists = playlistService.getPlaylistByToken(token);
         return Response.ok(playlists).build();
     }
 
@@ -66,7 +66,7 @@ public class PlaylistsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlist){
         playlistService.addPlaylist(token, playlist.getName());
-        PlaylistsDTO playlists = playlistService.getPlaylistByUser(token);
+        PlaylistsDTO playlists = playlistService.getPlaylistByToken(token);
         return Response.ok(playlists).build();
     }
 

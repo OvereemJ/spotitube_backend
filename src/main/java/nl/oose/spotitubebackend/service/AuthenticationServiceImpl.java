@@ -14,28 +14,37 @@ import javax.inject.Inject;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private UserDAOImpl userDAO;
-    private TokenDAOImpl tokenDAOImpl = new TokenDAOImpl();
-    private TokenGenerator tokenGenerator = new TokenGenerator();
+    private TokenDAOImpl tokenDAOImpl;
+    private TokenGenerator tokenGenerator;
 
-    public AuthenticationServiceImpl(){
 
-    }
 
     @Inject
-    public AuthenticationServiceImpl(UserDAOImpl userDAO){
+    public AuthenticationServiceImpl(TokenDAOImpl tokenDAO, UserDAOImpl userDAO, TokenGenerator tokenGen){
         this.userDAO = userDAO;
+        this.tokenDAOImpl = tokenDAO;
+        this.tokenGenerator = tokenGen;
     }
+
     @Override
     public TokenDTO login(String username, String password) {
-        UserDTO user = userDAO.getUser(username, password);
+
         String generatedToken = tokenGenerator.generateToken();
-        if (user != null) {
+        if (generatedToken != null) {
             tokenDAOImpl.saveToken(username, generatedToken);
-            return new TokenDTO(generatedToken, user.getName());
+            return new TokenDTO(generatedToken, getNameOfUser(username, password));
         } else {
-            throw new SpotitubeLoginException("Login failed for user " + username);
+            throw new SpotitubeLoginException("Login failed for user.");
         }
     }
+
+    public String getNameOfUser(String username, String password){
+        UserDTO user = userDAO.getUser(username, password);
+        System.out.println(user.getName());
+        return user.getName();
+    }
+
+
 
 
 }

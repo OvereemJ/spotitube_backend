@@ -10,8 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistsDAOImpl implements PlaylistsDAOInterface {
+public class PlaylistsDAOImpl implements PlaylistsDAO {
     private List<PlaylistDTO> playlistArray = new ArrayList<>();
+
     @Override
     public PlaylistsDTO getUserPlaylists(String token){
         PlaylistsDTO playlistsDTO = null;
@@ -53,14 +54,15 @@ public class PlaylistsDAOImpl implements PlaylistsDAOInterface {
     }
 
     @Override
-    public void addPlaylistToDatabase(String name, String user) {
+    public void addPlaylistToDatabase(String token, String user) {
         int last_id = getLastInsertedId();
+
         try
                 (
                         PreparedStatement preparedStatement = getConnection().prepareStatement("INSERT INTO playlist (playlist_id, name, owner) VALUES (?,?,?)");
                 ){
             preparedStatement.setInt(1, last_id);
-            preparedStatement.setString(2, name);
+            preparedStatement.setString(2, getUserByToken(token));
             preparedStatement.setBoolean(3, true);
             preparedStatement.execute();
 
@@ -102,6 +104,25 @@ public class PlaylistsDAOImpl implements PlaylistsDAOInterface {
         }
 
         return  last_inserted;
+    }
+
+
+    public String getUserByToken(String token) {
+        String user = "";
+        try{
+
+            PreparedStatement getUserByToken = getConnection().prepareStatement("SELECT A.name FROM account A INNER JOIN Token T " +
+                    "ON A.user = T.user WHERE auth_token = ?");
+            getUserByToken.setString(1, token);
+            ResultSet result = getUserByToken.executeQuery();
+            while(result.next()){
+                user += result.getString("user");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return  user;
     }
 
 

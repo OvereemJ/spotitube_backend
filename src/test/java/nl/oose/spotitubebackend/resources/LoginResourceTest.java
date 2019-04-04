@@ -3,7 +3,6 @@ package nl.oose.spotitubebackend.resources;
 
 import nl.oose.spotitubebackend.dto.TokenDTO;
 import nl.oose.spotitubebackend.dto.UserDTO;
-import nl.oose.spotitubebackend.resources.LoginResource;
 import nl.oose.spotitubebackend.service.AuthenticationService;
 import nl.oose.spotitubebackend.service.SpotitubeLoginException;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,14 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static  org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +31,11 @@ public class LoginResourceTest {
     @Test
     void testDefaultLoginResourceConstructor(){
         LoginResource loginResource = new LoginResource();
+    }
+
+    @BeforeEach
+    void setUp(){
+        MockitoAnnotations.initMocks(this);
     }
     @Test
     void loginSuccess() {
