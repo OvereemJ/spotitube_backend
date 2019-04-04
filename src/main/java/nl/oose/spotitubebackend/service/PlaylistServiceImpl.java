@@ -7,23 +7,23 @@ import nl.oose.spotitubebackend.persistence.TokenDAOImpl;
 import nl.oose.spotitubebackend.persistence.UserDAOImpl;
 
 import javax.inject.Inject;
+import java.awt.image.TileObserver;
 
 public class PlaylistServiceImpl implements PlaylistService {
-    TokenDAOImpl tokenDAOImpl = new TokenDAOImpl();
-    UserDAOImpl userDAOImpl = new UserDAOImpl();
+    TokenDAOImpl tokenDAOImpl;
     PlaylistsDAOImpl playlistsDAO;
 
 
     @Inject
-    public PlaylistServiceImpl(PlaylistsDAOImpl playlistsDAO){
+    public PlaylistServiceImpl(PlaylistsDAOImpl playlistsDAO, TokenDAOImpl tokenDAO){
         this.playlistsDAO = playlistsDAO;
+        this.tokenDAOImpl = tokenDAO;
     }
 
     @Override
-    public PlaylistsDTO getPlaylistByUser(String token) {
+    public PlaylistsDTO getPlaylistByToken(String token) {
         //TODO Get playlist via token
-        UserDTO validToken = userDAOImpl.getUserByToken(token);
-        if(validToken != null){
+        if(tokenDAOImpl.tokenExpired(token) == false){
             return playlistsDAO.getUserPlaylists(token);
         } else {
             throw new SpotitubeTokenException("Can't create playlist, "+token+" is invalid");
@@ -32,8 +32,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public void removePlaylist(String token, int playlistid) {
-        UserDTO user  = userDAOImpl.getUserByToken(token);
-        if(user != null || tokenDAOImpl.tokenExpired(token) == false){
+        if(!tokenDAOImpl.tokenExpired(token)){
             playlistsDAO.removePlaylistFromDatabase(playlistid);
         } else {
             throw new SpotitubeTokenException("Invalid token or token is expired");
@@ -42,9 +41,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public void addPlaylist(String token, String name) {
-        UserDTO user = userDAOImpl.getUserByToken(token);
-        if(user != null || tokenDAOImpl.tokenExpired(token) == false){
-            playlistsDAO.addPlaylistToDatabase(name, user.getUser());
+        if( tokenDAOImpl.tokenExpired(token) == false){
+            playlistsDAO.addPlaylistToDatabase(token, name);
         } else {
             throw new SpotitubeTokenException("Invalid token or token is expired");
         }
@@ -53,8 +51,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public void updatePlaylistName(String token, int playlist_id, String name) {
-        UserDTO user = userDAOImpl.getUserByToken(token);
-        if(user != null || tokenDAOImpl.tokenExpired(token) == false){
+        if( tokenDAOImpl.tokenExpired(token) == false){
             playlistsDAO.updatePlaylist(playlist_id, name);
         } else {
             throw new SpotitubeTokenException("Invalid token or token is expired");

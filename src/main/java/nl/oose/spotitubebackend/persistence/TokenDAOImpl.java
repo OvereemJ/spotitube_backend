@@ -39,7 +39,7 @@ public class TokenDAOImpl implements TokenDAO {
         try
                 (
                         Connection connection = new ConnectionFactory().getConnection();
-                        PreparedStatement preparedStatement = connection.prepareStatement("SELECT creationDate, expiryLength FROM token where auth_token = ?")
+                        PreparedStatement preparedStatement = connection.prepareStatement("SELECT creationDate FROM token where auth_token = ?")
                 ){
             preparedStatement.setString(1, token);
             ResultSet resultSet = preparedStatement.executeQuery();

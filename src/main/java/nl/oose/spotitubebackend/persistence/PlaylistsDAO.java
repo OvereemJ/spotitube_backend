@@ -4,7 +4,7 @@ import nl.oose.spotitubebackend.dto.PlaylistsDTO;
 
 import java.sql.Connection;
 
-public interface PlaylistsDAOInterface {
+public interface PlaylistsDAO {
     PlaylistsDTO getUserPlaylists(String token);
 
     void removePlaylistFromDatabase(int playlistid);
