@@ -26,7 +26,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         if(tokenDAOImpl.tokenExpired(token) == false){
             return playlistsDAO.getUserPlaylists(token);
         } else {
-            throw new SpotitubeTokenException("Can't create playlist, "+token+" is invalid");
+            throw new SpotitubeTokenException("Invalid token or token is expired");
         }
     }
 

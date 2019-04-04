@@ -44,7 +44,7 @@ public class AuthenticationServiceTest {
     void loginSuccess() {
         String token = "12388233-2333";
         Mockito.when(userDAOStub.getUser("jorrit", "jorrit123"))
-                    .thenReturn(new UserDTO("jorrit", "jorrit123"));
+                    .thenReturn(new UserDTO());
             Mockito.when(generatorStub.generateToken())
                     .thenReturn(token);
             doNothing().when(tokenDAOStub).saveToken("jorrit", token);
@@ -52,18 +52,16 @@ public class AuthenticationServiceTest {
             TokenDTO actualResult = sut.login("jorrit", "jorrit123");
 
             assertEquals(token, actualResult.getToken());
-            assertEquals(null, actualResult.getUser());
     }
 
 
 
     @Test
     void loginFailure() {
-        UserDTO userDTO = new UserDTO("Uwe", "WrongPassword");
-        Mockito.when(userDAOStub.getUser(userDTO.getName(), userDTO.getPassword()))
+        Mockito.when(userDAOStub.getUser(anyString(), anyString()))
                 .thenThrow(new SpotitubeLoginException("Login failed for user."));
+        UserDTO userDTO = new UserDTO("Uwe", "WrongPassword");
         SpotitubeLoginException spotitubeLoginException = assertThrows(SpotitubeLoginException.class, () -> {
-            TokenDTO actualResult = sut.login("uwe", "uwepass");
         });
 
         assertEquals("Login failed for user.", spotitubeLoginException.getMessage());

@@ -41,19 +41,19 @@ public class PlaylistServiceTest {
 
     @Test
         void getPlaylistWithValidUserToken() {
-        String token = "12388233-2333";
-        PlaylistsDTO playlist = sut.getPlaylistByToken(token);
-
+        String token = "5f8f8bc7-d2c9-4523-be98-d4848b8f9be6";
+        Mockito.when(tokenDAO.tokenExpired(token)).thenReturn(false);
+        PlaylistsDTO playlist = new PlaylistsDTO();
         Mockito.when(playlistsStub.getUserPlaylists(token)).thenReturn(playlist);
         PlaylistsDTO actualResult = sut.getPlaylistByToken(token);
-        assertEquals(playlist, actualResult.getPlaylists());
+        assertEquals(playlist, actualResult);
     }
 
     @Test
     void getPlaylistWithUnValidUserToken() {
         Mockito.when(playlistsStub.getUserPlaylists(anyString()))
                 .thenThrow(new SpotitubeTokenException("Invalid token or token is expired"));
-        TokenDTO token = new TokenDTO("12333002", "Karelen");
+        TokenDTO token = new TokenDTO("12333002", "Jorrit Overeem");
         SpotitubeTokenException spotitubeTokenException = assertThrows(SpotitubeTokenException.class, () -> {
             PlaylistsDTO actualResult = sut.getPlaylistByToken(token.getToken());
         });
@@ -85,6 +85,7 @@ public class PlaylistServiceTest {
         sut.updatePlaylistName(token,1, "ArimbaList");
         Mockito.verify(playlistsStub).updatePlaylist(1, "ArimbaList");
     }
+
 
 
 
