@@ -54,7 +54,7 @@ public class PlaylistsDAOImpl implements PlaylistsDAO {
     }
 
     @Override
-    public void addPlaylistToDatabase(String token, String user) {
+    public void addPlaylistToDatabase(String token, String name) {
         int last_id = getLastInsertedId();
 
         try
@@ -62,11 +62,11 @@ public class PlaylistsDAOImpl implements PlaylistsDAO {
                         PreparedStatement preparedStatement = getConnection().prepareStatement("INSERT INTO playlist (playlist_id, name, owner) VALUES (?,?,?)");
                 ){
             preparedStatement.setInt(1, last_id);
-            preparedStatement.setString(2, getUserByToken(token));
+            preparedStatement.setString(2, name);
             preparedStatement.setBoolean(3, true);
             preparedStatement.execute();
 
-            insertUser(user, last_id);
+            insertUser(getUserByToken(token), last_id);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -111,8 +111,8 @@ public class PlaylistsDAOImpl implements PlaylistsDAO {
         String user = "";
         try{
 
-            PreparedStatement getUserByToken = getConnection().prepareStatement("SELECT A.name FROM account A INNER JOIN Token T " +
-                    "ON A.user = T.user WHERE auth_token = ?");
+            PreparedStatement getUserByToken = getConnection().prepareStatement("SELECT A.user FROM account A INNER JOIN Token T " +
+                    "ON T.user = A.user WHERE T.auth_token = ?");
             getUserByToken.setString(1, token);
             ResultSet result = getUserByToken.executeQuery();
             while(result.next()){

@@ -1,10 +1,8 @@
 package nl.oose.spotitubebackend.service;
 
 import nl.oose.spotitubebackend.dto.TracksDTO;
-import nl.oose.spotitubebackend.dto.UserDTO;
 import nl.oose.spotitubebackend.persistence.TokenDAOImpl;
 import nl.oose.spotitubebackend.persistence.TrackDAOImpl;
-import nl.oose.spotitubebackend.persistence.UserDAOImpl;
 
 import javax.inject.Inject;
 
