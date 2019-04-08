@@ -46,7 +46,7 @@ public class TrackDAOImpl implements TrackDAO {
     }
 
     @Override
-    public TracksDTO getAllTracksInPlaylist(String playlist_id) {
+    public TracksDTO getAllTracksInPlaylist(int playlist_id) {
         TracksDTO tracksDTO = null;
         try {
             Connection connection = new ConnectionFactory().getConnection();
@@ -55,7 +55,7 @@ public class TrackDAOImpl implements TrackDAO {
                     "    T.id = PT.track_id" +
                     "    WHERE PT.playlist_id = ?");
 
-            preparedStatement.setString(1, playlist_id);
+            preparedStatement.setInt(1, playlist_id);
             ResultSet result = preparedStatement.executeQuery();
 
             tracksDTO = new TracksDTO(setTracks(result));

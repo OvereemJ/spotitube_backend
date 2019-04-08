@@ -30,16 +30,17 @@ public class TrackServiceImpl implements TrackService{
     @Override
     public TracksDTO getAllTracksFromPlaylist(String token, String playlist_id) {
         if(tokenDAOImpl.tokenExpired(token) == false){
-            return trackDAOImpl.getAllTracksInPlaylist(playlist_id);
+            return trackDAOImpl.getAllTracksInPlaylist(Integer.parseInt(playlist_id));
         } else {
             throw new SpotitubeTokenException("Invalid token or token is expired");
         }
     }
 
+
     @Override
     public void addTrack(String token, String playlist_id, int track_id, boolean offlineAvailable) {
         if(tokenDAOImpl.tokenExpired(token) == false){
-            trackDAOImpl.addTrackToPlaylist(Integer.parseInt(playlist_id),track_id, offlineAvailable);
+            trackDAOImpl.addTrackToPlaylist(Integer.parseInt(playlist_id), track_id, offlineAvailable);
         } else {
             throw new SpotitubeTokenException("Invalid token or token is expired");
         }
@@ -53,5 +54,6 @@ public class TrackServiceImpl implements TrackService{
             throw new SpotitubeTokenException("Invalid token or token is expired");
         }
     }
+
 
 }

@@ -28,7 +28,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public TokenDTO login(String username, String password) {
-
         String generatedToken = tokenGenerator.generateToken();
         if (generatedToken != null) {
             tokenDAOImpl.saveToken(username, generatedToken);

@@ -59,14 +59,14 @@ class TrackServiceTest {
     void getAllTracksInPlaylist() {
         String token = "12388233-2333";
         TracksDTO tracksList = new TracksDTO();
-        Mockito.when(trackDAOStub.getAllTracksInPlaylist("1")).thenReturn(tracksList);
+        Mockito.when(trackDAOStub.getAllTracksInPlaylist(1)).thenReturn(tracksList);
         TracksDTO actualResult = sut.getAllTracksFromPlaylist(token, "1");
         assertEquals(tracksList, actualResult);
     }
 
     @Test
     void getAllTracksInPlaylistWithUnvalidToken() {
-        Mockito.when(trackDAOStub.getAllTracksInPlaylist(anyString()))
+        Mockito.when(trackDAOStub.getAllTracksInPlaylist(anyInt()))
                 .thenThrow(new SpotitubeLoginException("Invalid token or token is expired"));
         TokenDTO token = new TokenDTO("12333002", "Jorrit Overeem");
         SpotitubeTokenException spotitubeTokenException = assertThrows(SpotitubeTokenException.class, () -> {

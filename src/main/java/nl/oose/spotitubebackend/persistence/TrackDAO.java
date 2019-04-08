@@ -10,7 +10,7 @@ import java.util.List;
 public interface TrackDAO {
     TracksDTO getAllTracksNotInPlaylist(int playlist_id);
 
-    TracksDTO getAllTracksInPlaylist(String playlist_id);
+    TracksDTO getAllTracksInPlaylist(int playlist_id);
 
     void removeTrackFromPlaylist(int playlistid, int trackid);
 
